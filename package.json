@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@netlify/plugin-nextjs": "^5.15.8",
     "@upstash/redis": "^1.36.0",
     "nanoid": "^5.1.6",
     "next": "16.1.1",
