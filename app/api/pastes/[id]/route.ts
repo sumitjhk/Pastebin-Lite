@@ -4,13 +4,12 @@ import { getCurrentTime } from '@/lib/time';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params; // ✅ no await
+    const { id } = await params;
 
     const currentTime = getCurrentTime(request.headers);
-
     const paste = await fetchPaste(id, currentTime, true);
 
     if (!paste) {
