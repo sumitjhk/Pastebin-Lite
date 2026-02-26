@@ -4,33 +4,35 @@ import { getCurrentTime } from '@/lib/time';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
-    
-    // Get current time (supports TEST_MODE)
+    const { id } = params; // ✅ no await
+
     const currentTime = getCurrentTime(request.headers);
-    
-    // Fetch paste and decrement view count
+
     const paste = await fetchPaste(id, currentTime, true);
-    
+
     if (!paste) {
       return NextResponse.json(
         { error: 'Paste not found or expired' },
         { status: 404 }
       );
     }
-    
-    // Format response
-    const response = {
-      content: paste.content,
-      remaining_views: paste.remainingViews,
-      expires_at: paste.expiresAt ? new Date(paste.expiresAt).toISOString() : null,
-    };
-    
-    return NextResponse.json(response, { status: 200 });
+
+    return NextResponse.json(
+      {
+        content: paste.content,
+        remaining_views: paste.remainingViews,
+        expires_at: paste.expiresAt
+          ? new Date(paste.expiresAt).toISOString()
+          : null,
+      },
+      { status: 200 }
+    );
+
   } catch (error) {
+    console.error("GET ERROR:", error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
